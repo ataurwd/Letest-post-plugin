@@ -1,0 +1,118 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lps/latest-posts-showcase",
+  "version": "1.0.0",
+  "title": "Latest Posts Showcase",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "Showcase your latest blog posts with beautiful customizable layouts and grid patterns.",
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "attributes": {
+    "numberOfPosts": {
+      "type": "number",
+      "default": 6
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "default": []
+    },
+    "order": {
+      "type": "string",
+      "default": "desc"
+    },
+    "offset": {
+      "type": "number",
+      "default": 0
+    },
+    "showImage": {
+      "type": "boolean",
+      "default": true
+    },
+    "showExcerpt": {
+      "type": "boolean",
+      "default": true
+    },
+    "showDate": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAuthor": {
+      "type": "boolean",
+      "default": true
+    },
+    "showReadMore": {
+      "type": "boolean",
+      "default": true
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "style-1"
+    },
+    "spacing": {
+      "type": "string",
+      "default": "medium"
+    },
+    "borderRadius": {
+      "type": "number",
+      "default": 8
+    },
+    "shadow": {
+      "type": "string",
+      "default": "small"
+    },
+    "aspectRatio": {
+      "type": "string",
+      "default": "16-9"
+    },
+    "layoutType": {
+      "type": "string",
+      "default": "grid"
+    },
+    "titleColor": {
+      "type": "string",
+      "default": ""
+    },
+    "titleFontSize": {
+      "type": "number",
+      "default": 20
+    },
+    "metaColor": {
+      "type": "string",
+      "default": ""
+    },
+    "badgeBgColor": {
+      "type": "string",
+      "default": ""
+    },
+    "badgeTextColor": {
+      "type": "string",
+      "default": ""
+    },
+    "excerptFontSize": {
+      "type": "number",
+      "default": 14
+    },
+    "cardBgColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "latest-posts-showcase",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

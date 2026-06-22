@@ -1,0 +1,15 @@
+{
+  "name": "latest-posts-showcase",
+  "version": "1.0.0",
+  "description": "Gutenberg block to showcase latest posts using dynamic Gutenberg templates.",
+  "author": "Antigravity",
+  "license": "GPL-2.0-or-later",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^30.0.0"
+  }
+}

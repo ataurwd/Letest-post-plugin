@@ -1,0 +1,43 @@
+/**
+ * Editor-specific styles for Latest Posts Showcase.
+ */
+.wp-block-lps-latest-posts-showcase {
+	// Inside editor, links should not be clickable to prevent editor navigation
+	.lps-post-card {
+		pointer-events: none;
+		user-select: none;
+	}
+
+	// Adjust wrapper borders slightly in focus state
+	&.is-selected {
+		outline: 1px solid var(--wp-admin-theme-color, #007cba);
+	}
+}
+
+// Sidebar category checklist design
+.lps-category-select-list {
+	max-height: 180px;
+	overflow-y: auto;
+	border: 1px solid #e0e0e0;
+	padding: 8px 12px;
+	border-radius: 4px;
+	background: #ffffff;
+	margin-top: 8px;
+
+	.lps-category-select-item {
+		margin-bottom: 6px;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		label {
+			font-size: 13px;
+			color: #303030;
+			cursor: pointer;
+		}
+	}
+}
