@@ -33,6 +33,27 @@ function atpx_register_atpost_block() {
 add_action( 'init', 'atpx_register_atpost_block' );
 
 /**
+ * Register a custom block category for AT Blocks.
+ *
+ * @param array $categories Array of block categories.
+ * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+ * @return array Multi-dimensional array of block categories.
+ */
+function atpx_register_block_categories( $categories, $block_editor_context ) {
+	return array_merge(
+		$categories,
+		array(
+			array(
+				'slug'  => 'atpx-blocks',
+				'title' => __( 'AT Blocks', 'wp-atpost' ),
+				'icon'  => null,
+			),
+		)
+	);
+}
+add_filter( 'block_categories_all', 'atpx_register_block_categories', 10, 2 );
+
+/**
  * Server-side rendering callback for the Gutenberg block.
  *
  * @param array $attributes Block attributes.
