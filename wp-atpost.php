@@ -62,6 +62,7 @@ add_filter( 'block_categories_all', 'atpx_register_block_categories', 10, 2 );
  */
 function atpx_render_atpost( $attributes, $content ) {
 	// Extract attributes and assign defaults.
+	$content_order   = isset( $attributes['contentOrder'] ) ? $attributes['contentOrder'] : array( 'image', 'meta', 'title', 'excerpt', 'readMore' );
 	$number_of_posts = isset( $attributes['numberOfPosts'] ) ? intval( $attributes['numberOfPosts'] ) : 6;
 	$categories      = isset( $attributes['categories'] ) ? $attributes['categories'] : array();
 	$order           = isset( $attributes['order'] ) ? sanitize_text_field( $attributes['order'] ) : 'desc';
@@ -161,59 +162,26 @@ function atpx_render_atpost( $attributes, $content ) {
 		while ( $query->have_posts() ) {
 			$query->the_post();
 			$post_id = get_the_ID();
+			$first_item = $content_order[0];
 			?>
 			<a href="<?php echo esc_url( get_permalink() ); ?>" class="atpx-post-card">
-				<?php if ( $show_image && 'style-2' !== $card_style ) : ?>
-					<div class="atpx-post-image-wrapper">
-						<?php
-						$post_categories = get_the_category( $post_id );
-						if ( ! empty( $post_categories ) ) {
-							echo '<span class="atpx-post-category-tag">' . esc_html( $post_categories[0]->name ) . '</span>';
-						}
-
-						if ( has_post_thumbnail() ) {
-							the_post_thumbnail( 'medium_large' );
-						} else {
-							echo '<div style="width:100%; height:100%; background:linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);"></div>';
-						}
-						?>
-					</div>
-				<?php endif; ?>
-
+				<?php
+				if ( 'image' === $first_item && $show_image && 'style-2' !== $card_style ) {
+					echo atpx_render_card_part( 'image', $post_id, $card_style, $show_image, $show_excerpt, $show_date, $show_author, $show_read_more );
+				}
+				?>
 				<div class="atpx-post-content">
-					<?php if ( $show_date || $show_author ) : ?>
-						<div class="atpx-post-meta">
-							<?php if ( $show_date ) : ?>
-								<span class="atpx-post-date"><?php echo esc_html( get_the_date() ); ?></span>
-							<?php endif; ?>
-							<?php if ( $show_date && $show_author ) : ?>
-								<span class="atpx-meta-sep">•</span>
-							<?php endif; ?>
-							<?php if ( $show_author ) : ?>
-								<span class="atpx-post-author"><?php echo esc_html( sprintf( esc_html__( 'By %s', 'wp-atpost' ), esc_html( get_the_author() ) ) ); ?></span>
-							<?php endif; ?>
-						</div>
-					<?php endif; ?>
-
-					<h3 class="atpx-post-title">
-						<?php echo esc_html( get_the_title() ); ?>
-					</h3>
-
-					<?php if ( $show_excerpt && 'style-1' === $card_style ) : ?>
-						<div class="atpx-post-excerpt">
-							<?php echo wp_kses_post( get_the_excerpt() ); ?>
-						</div>
-					<?php endif; ?>
-
-					<?php if ( $show_read_more && 'style-1' === $card_style ) : ?>
-						<span class="atpx-post-readmore">
-							<?php esc_html_e( 'Read More', 'wp-atpost' ); ?>
-							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-								<line x1="5" y1="12" x2="19" y2="12"></line>
-								<polyline points="12 5 19 12 12 19"></polyline>
-							</svg>
-						</span>
-					<?php endif; ?>
+					<?php
+					foreach ( $content_order as $part ) {
+						if ( 'image' === $part ) {
+							if ( 'image' !== $first_item && $show_image && 'style-2' !== $card_style ) {
+								echo atpx_render_card_part( 'image', $post_id, $card_style, $show_image, $show_excerpt, $show_date, $show_author, $show_read_more );
+							}
+						} else {
+							echo atpx_render_card_part( $part, $post_id, $card_style, $show_image, $show_excerpt, $show_date, $show_author, $show_read_more );
+						}
+					}
+					?>
 				</div>
 			</a>
 			<?php
@@ -223,4 +191,94 @@ function atpx_render_atpost( $attributes, $content ) {
 	</div>
 	<?php
 	return ob_get_clean();
+}
+
+/**
+ * Render a specific card part.
+ *
+ * @param string $part The part name ('image', 'meta', 'title', 'excerpt', 'readMore').
+ * @param int    $post_id The post ID.
+ * @param string $card_style The card style.
+ * @param bool   $show_image Whether to show the image.
+ * @param bool   $show_excerpt Whether to show the excerpt.
+ * @param bool   $show_date Whether to show the date.
+ * @param bool   $show_author Whether to show the author.
+ * @param bool   $show_read_more Whether to show the read more button.
+ * @return string The rendered HTML.
+ */
+function atpx_render_card_part( $part, $post_id, $card_style, $show_image, $show_excerpt, $show_date, $show_author, $show_read_more ) {
+	if ( 'image' === $part && $show_image && 'style-2' !== $card_style ) {
+		ob_start();
+		?>
+		<div class="atpx-post-image-wrapper">
+			<?php
+			$post_categories = get_the_category( $post_id );
+			if ( ! empty( $post_categories ) ) {
+				echo '<span class="atpx-post-category-tag">' . esc_html( $post_categories[0]->name ) . '</span>';
+			}
+
+			if ( has_post_thumbnail( $post_id ) ) {
+				echo get_the_post_thumbnail( $post_id, 'medium_large' );
+			} else {
+				echo '<div style="width:100%; height:100%; background:linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);"></div>';
+			}
+			?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	if ( 'meta' === $part && ( $show_date || $show_author ) ) {
+		ob_start();
+		?>
+		<div class="atpx-post-meta">
+			<?php if ( $show_date ) : ?>
+				<span class="atpx-post-date"><?php echo esc_html( get_the_date( '', $post_id ) ); ?></span>
+			<?php endif; ?>
+			<?php if ( $show_date && $show_author ) : ?>
+				<span class="atpx-meta-sep">•</span>
+			<?php endif; ?>
+			<?php if ( $show_author ) : ?>
+				<span class="atpx-post-author"><?php echo esc_html( sprintf( esc_html__( 'By %s', 'wp-atpost' ), esc_html( get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) ) ) ) ); ?></span>
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	if ( 'title' === $part ) {
+		ob_start();
+		?>
+		<h3 class="atpx-post-title">
+			<?php echo esc_html( get_the_title( $post_id ) ); ?>
+		</h3>
+		<?php
+		return ob_get_clean();
+	}
+
+	if ( 'excerpt' === $part && $show_excerpt && 'style-1' === $card_style ) {
+		ob_start();
+		?>
+		<div class="atpx-post-excerpt">
+			<?php echo wp_kses_post( get_the_excerpt( $post_id ) ); ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	if ( 'readMore' === $part && $show_read_more && 'style-1' === $card_style ) {
+		ob_start();
+		?>
+		<span class="atpx-post-readmore">
+			<?php esc_html_e( 'Read More', 'wp-atpost' ); ?>
+			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+				<line x1="5" y1="12" x2="19" y2="12"></line>
+				<polyline points="12 5 19 12 12 19"></polyline>
+			</svg>
+		</span>
+		<?php
+		return ob_get_clean();
+	}
+
+	return '';
 }

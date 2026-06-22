@@ -12,6 +12,10 @@
     "align": [ "wide", "full" ]
   },
   "attributes": {
+    "contentOrder": {
+      "type": "array",
+      "default": ["image", "meta", "title", "excerpt", "readMore"]
+    },
     "numberOfPosts": {
       "type": "number",
       "default": 6

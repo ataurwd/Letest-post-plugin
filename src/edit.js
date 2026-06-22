@@ -8,10 +8,134 @@ import {
 	Spinner,
 	TabPanel
 } from '@wordpress/components';
-import { RawHTML } from '@wordpress/element';
+import { RawHTML, useState } from '@wordpress/element';
+
+function ReorderableItems( { items, onChange } ) {
+	const handleMoveUp = ( index ) => {
+		if ( index === 0 ) return;
+		const newItems = [ ...items ];
+		const temp = newItems[ index ];
+		newItems[ index ] = newItems[ index - 1 ];
+		newItems[ index - 1 ] = temp;
+		onChange( newItems );
+	};
+
+	const handleMoveDown = ( index ) => {
+		if ( index === items.length - 1 ) return;
+		const newItems = [ ...items ];
+		const temp = newItems[ index ];
+		newItems[ index ] = newItems[ index + 1 ];
+		newItems[ index + 1 ] = temp;
+		onChange( newItems );
+	};
+
+	const [ dragIndex, setDragIndex ] = useState( null );
+
+	const onDragStart = ( e, index ) => {
+		setDragIndex( index );
+		e.dataTransfer.effectAllowed = 'move';
+	};
+
+	const onDragOver = ( e, index ) => {
+		e.preventDefault();
+	};
+
+	const onDrop = ( e, index ) => {
+		if ( dragIndex === null || dragIndex === index ) return;
+		const newItems = [ ...items ];
+		const draggedItem = newItems[ dragIndex ];
+		newItems.splice( dragIndex, 1 );
+		newItems.splice( index, 0, draggedItem );
+		onChange( newItems );
+		setDragIndex( null );
+	};
+
+	const itemLabels = {
+		image: 'Featured Image',
+		meta: 'Meta Info (Date/Author)',
+		title: 'Post Title',
+		excerpt: 'Post Excerpt',
+		readMore: 'Read More Link'
+	};
+
+	return (
+		<div className="atpx-reorderable-list">
+			{ items.map( ( item, index ) => (
+				<div
+					key={ item }
+					className={`atpx-reorderable-item ${ dragIndex === index ? 'is-dragging' : '' }`}
+					draggable
+					onDragStart={ ( e ) => onDragStart( e, index ) }
+					onDragOver={ ( e ) => onDragOver( e, index ) }
+					onDrop={ ( e ) => onDrop( e, index ) }
+					style={ {
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						padding: '8px 12px',
+						marginBottom: '6px',
+						background: '#f8fafc',
+						border: '1px solid #e2e8f0',
+						borderRadius: '6px',
+						cursor: 'grab'
+					} }
+				>
+					<div style={ { display: 'flex', alignItems: 'center', gap: '8px' } }>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+							<circle cx="9" cy="5" r="1" />
+							<circle cx="9" cy="12" r="1" />
+							<circle cx="9" cy="19" r="1" />
+							<circle cx="15" cy="5" r="1" />
+							<circle cx="15" cy="12" r="1" />
+							<circle cx="15" cy="19" r="1" />
+						</svg>
+						<span style={ { fontSize: '13px', fontWeight: '500', color: '#334155' } }>
+							{ itemLabels[ item ] }
+						</span>
+					</div>
+					<div style={ { display: 'flex', gap: '4px' } }>
+						<button
+							onClick={ ( e ) => { e.preventDefault(); handleMoveUp( index ); } }
+							disabled={ index === 0 }
+							style={ {
+								background: 'none',
+								border: 'none',
+								cursor: index === 0 ? 'not-allowed' : 'pointer',
+								opacity: index === 0 ? 0.3 : 1,
+								padding: '2px'
+							} }
+							title="Move Up"
+						>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+								<polyline points="18 15 12 9 6 15" />
+							</svg>
+						</button>
+						<button
+							onClick={ ( e ) => { e.preventDefault(); handleMoveDown( index ); } }
+							disabled={ index === items.length - 1 }
+							style={ {
+								background: 'none',
+								border: 'none',
+								cursor: index === items.length - 1 ? 'not-allowed' : 'pointer',
+								opacity: index === items.length - 1 ? 0.3 : 1,
+								padding: '2px'
+							} }
+							title="Move Down"
+						>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+								<polyline points="6 9 12 15 18 9" />
+							</svg>
+						</button>
+					</div>
+				</div>
+			) ) }
+		</div>
+	);
+}
 
 export default function Edit( { attributes, setAttributes } ) {
 	const {
+		contentOrder,
 		numberOfPosts,
 		categories,
 		order,
@@ -109,6 +233,99 @@ export default function Edit( { attributes, setAttributes } ) {
 			month: 'long',
 			day: 'numeric',
 		} );
+	};
+
+	const orderOfItems = contentOrder || [ 'image', 'meta', 'title', 'excerpt', 'readMore' ];
+	const firstItem = orderOfItems[ 0 ];
+
+	const renderSkeletonPart = ( part ) => {
+		if ( part === 'image' && showImage && cardStyle !== 'style-2' ) {
+			return <div className="atpx-skeleton-img"></div>;
+		}
+		if ( part === 'meta' && ( showDate || showAuthor ) ) {
+			return <div className="atpx-skeleton-meta"></div>;
+		}
+		if ( part === 'title' ) {
+			return <div className="atpx-skeleton-title"></div>;
+		}
+		if ( part === 'excerpt' && showExcerpt && cardStyle === 'style-1' ) {
+			return (
+				<div className="atpx-skeleton-text">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			);
+		}
+		if ( part === 'readMore' && showReadMore && cardStyle === 'style-1' ) {
+			return <div className="atpx-skeleton-btn"></div>;
+		}
+		return null;
+	};
+
+	const renderCardPart = ( part, post, featuredImage, firstCategory, authorName ) => {
+		if ( part === 'image' && showImage && cardStyle !== 'style-2' ) {
+			return (
+				<div className="atpx-post-image-wrapper">
+					{ firstCategory && (
+						<span className="atpx-post-category-tag">{ firstCategory }</span>
+					) }
+					{ featuredImage ? (
+						<img src={ featuredImage } alt={ post.title.rendered } />
+					) : (
+						<div style={ {
+							width: '100%',
+							height: '100%',
+							background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
+						} }></div>
+					) }
+				</div>
+			);
+		}
+
+		if ( part === 'meta' && ( showDate || showAuthor ) ) {
+			return (
+				<div className="atpx-post-meta">
+					{ showDate && (
+						<span className="atpx-post-date">{ formatDate( post.date ) }</span>
+					) }
+					{ showDate && showAuthor && <span className="atpx-meta-sep">•</span> }
+					{ showAuthor && (
+						<span className="atpx-post-author">By { authorName }</span>
+					) }
+				</div>
+			);
+		}
+
+		if ( part === 'title' ) {
+			return (
+				<h3 className="atpx-post-title">
+					<RawHTML>{ post.title.rendered }</RawHTML>
+				</h3>
+			);
+		}
+
+		if ( part === 'excerpt' && showExcerpt && cardStyle === 'style-1' ) {
+			return (
+				<div className="atpx-post-excerpt">
+					<RawHTML>{ post.excerpt.rendered }</RawHTML>
+				</div>
+			);
+		}
+
+		if ( part === 'readMore' && showReadMore && cardStyle === 'style-1' ) {
+			return (
+				<span className="atpx-post-readmore">
+					Read More
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+						<polyline points="12 5 19 12 12 19"></polyline>
+					</svg>
+				</span>
+			);
+		}
+
+		return null;
 	};
 
 	return (
@@ -251,6 +468,16 @@ export default function Edit( { attributes, setAttributes } ) {
 											onChange={ ( val ) => setAttributes( { showReadMore: val } ) }
 										/>
 									</PanelBody>
+
+									<PanelBody title="Drag / Manage Content Position" initialOpen={ true }>
+										<p style={ { fontSize: '12px', color: '#64748b', marginBottom: '12px', lineHeight: '1.4' } }>
+											Drag items or use the Up/Down buttons to reorder elements inside each post card:
+										</p>
+										<ReorderableItems
+											items={ contentOrder || [ 'image', 'meta', 'title', 'excerpt', 'readMore' ] }
+											onChange={ ( newOrder ) => setAttributes( { contentOrder: newOrder } ) }
+										/>
+									</PanelBody>
 								</>
 							);
 						}
@@ -387,24 +614,14 @@ export default function Edit( { attributes, setAttributes } ) {
 					<div className="atpx-skeleton-loader">
 						{ Array.from( { length: Math.min( numberOfPosts, 3 ) } ).map( ( _, i ) => (
 							<div key={ i } className="atpx-skeleton-card">
-								{ showImage && cardStyle !== 'style-2' && (
-									<div className="atpx-skeleton-img"></div>
-								) }
+								{ firstItem === 'image' && renderSkeletonPart( 'image' ) }
 								<div className="atpx-skeleton-content">
-									{ ( showDate || showAuthor ) && (
-										<div className="atpx-skeleton-meta"></div>
-									) }
-									<div className="atpx-skeleton-title"></div>
-									{ showExcerpt && cardStyle === 'style-1' && (
-										<div className="atpx-skeleton-text">
-											<span></span>
-											<span></span>
-											<span></span>
-										</div>
-									) }
-									{ showReadMore && cardStyle === 'style-1' && (
-										<div className="atpx-skeleton-btn"></div>
-									) }
+									{ orderOfItems.map( ( part ) => {
+										if ( part === 'image' ) {
+											return firstItem !== 'image' ? renderSkeletonPart( 'image' ) : null;
+										}
+										return renderSkeletonPart( part );
+									} ) }
 								</div>
 							</div>
 						) ) }
@@ -439,55 +656,15 @@ export default function Edit( { attributes, setAttributes } ) {
 
 						return (
 							<div key={ post.id } className="atpx-post-card">
-								{ showImage && cardStyle !== 'style-2' && (
-									<div className="atpx-post-image-wrapper">
-										{ firstCategory && (
-											<span className="atpx-post-category-tag">{ firstCategory }</span>
-										) }
-										{ featuredImage ? (
-											<img src={ featuredImage } alt={ post.title.rendered } />
-										) : (
-											<div style={ {
-												width: '100%',
-												height: '100%',
-												background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
-											} }></div>
-										) }
-									</div>
-								) }
+								{ firstItem === 'image' && renderCardPart( 'image', post, featuredImage, firstCategory, authorName ) }
 
 								<div className="atpx-post-content">
-									{ ( showDate || showAuthor ) && (
-										<div className="atpx-post-meta">
-											{ showDate && (
-												<span className="atpx-post-date">{ formatDate( post.date ) }</span>
-											) }
-											{ showDate && showAuthor && <span className="atpx-meta-sep">•</span> }
-											{ showAuthor && (
-												<span className="atpx-post-author">By { authorName }</span>
-											) }
-										</div>
-									) }
-
-									<h3 class="atpx-post-title">
-										<RawHTML>{ post.title.rendered }</RawHTML>
-									</h3>
-
-									{ showExcerpt && cardStyle === 'style-1' && (
-										<div className="atpx-post-excerpt">
-											<RawHTML>{ post.excerpt.rendered }</RawHTML>
-										</div>
-									) }
-
-									{ showReadMore && cardStyle === 'style-1' && (
-										<span className="atpx-post-readmore">
-											Read More
-											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-												<line x1="5" y1="12" x2="19" y2="12"></line>
-												<polyline points="12 5 19 12 12 19"></polyline>
-											</svg>
-										</span>
-									) }
+									{ orderOfItems.map( ( part ) => {
+										if ( part === 'image' ) {
+											return firstItem !== 'image' ? renderCardPart( 'image', post, featuredImage, firstCategory, authorName ) : null;
+										}
+										return renderCardPart( part, post, featuredImage, firstCategory, authorName );
+									} ) }
 								</div>
 							</div>
 						);
