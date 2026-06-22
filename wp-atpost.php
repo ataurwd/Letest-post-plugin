@@ -41,14 +41,14 @@ add_action( 'init', 'atpx_register_atpost_block' );
  */
 function atpx_register_block_categories( $categories, $block_editor_context ) {
 	return array_merge(
-		$categories,
 		array(
 			array(
 				'slug'  => 'atpx-blocks',
 				'title' => __( 'AT Blocks', 'wp-atpost' ),
 				'icon'  => null,
 			),
-		)
+		),
+		$categories
 	);
 }
 add_filter( 'block_categories_all', 'atpx_register_block_categories', 10, 2 );
