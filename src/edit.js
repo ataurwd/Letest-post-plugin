@@ -5,7 +5,8 @@ import {
 	RangeControl,
 	ToggleControl,
 	SelectControl,
-	Spinner
+	Spinner,
+	TabPanel
 } from '@wordpress/components';
 import { RawHTML } from '@wordpress/element';
 
@@ -97,212 +98,243 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Content Settings" initialOpen={ true }>
-					<SelectControl
-						label="Layout Type"
-						value={ layoutType }
-						options={ [
-							{ label: 'Grid Layout', value: 'grid' },
-							{ label: 'List Layout', value: 'list' },
-						] }
-						onChange={ ( val ) => setAttributes( { layoutType: val } ) }
-					/>
-
-					<RangeControl
-						label="Number of Posts"
-						min={ 1 }
-						max={ 20 }
-						value={ numberOfPosts }
-						onChange={ ( val ) => setAttributes( { numberOfPosts: val } ) }
-					/>
-
-					<div style={ { marginBottom: '16px' } }>
-						<span className="components-base-control__label" style={ { display: 'block', marginBottom: '8px' } }>
-							Filter by Categories
-						</span>
-						{ categoriesList.length === 0 ? (
-							<Spinner />
-						) : (
-							<div className="lps-category-select-list">
-								{ categoriesList.map( ( cat ) => (
-									<div key={ cat.id } className="lps-category-select-item">
-										<input
-											type="checkbox"
-											id={ `lps-editor-cat-${ cat.id }` }
-											checked={ categories.includes( cat.id ) }
-											onChange={ () => handleCategoryChange( cat.id ) }
-										/>
-										<label htmlFor={ `lps-editor-cat-${ cat.id }` }>{ cat.name }</label>
-									</div>
-								) ) }
-							</div>
-						)}
-					</div>
-
-					<SelectControl
-						label="Order"
-						value={ order }
-						options={ [
-							{ label: 'Newest First', value: 'desc' },
-							{ label: 'Oldest First', value: 'asc' },
-						] }
-						onChange={ ( val ) => setAttributes( { order: val } ) }
-					/>
-
-					<RangeControl
-						label="Offset (Skip posts)"
-						min={ 0 }
-						max={ 10 }
-						value={ offset }
-						onChange={ ( val ) => setAttributes( { offset: val } ) }
-					/>
-				</PanelBody>
-
-				<PanelBody title="Display Settings" initialOpen={ false }>
-					<ToggleControl
-						label="Show Featured Image"
-						checked={ showImage }
-						onChange={ ( val ) => setAttributes( { showImage: val } ) }
-					/>
-					<ToggleControl
-						label="Show Excerpt"
-						checked={ showExcerpt }
-						onChange={ ( val ) => setAttributes( { showExcerpt: val } ) }
-					/>
-					<ToggleControl
-						label="Show Date"
-						checked={ showDate }
-						onChange={ ( val ) => setAttributes( { showDate: val } ) }
-					/>
-					<ToggleControl
-						label="Show Author"
-						checked={ showAuthor }
-						onChange={ ( val ) => setAttributes( { showAuthor: val } ) }
-					/>
-					<ToggleControl
-						label="Show Read More Button"
-						checked={ showReadMore }
-						onChange={ ( val ) => setAttributes( { showReadMore: val } ) }
-					/>
-				</PanelBody>
-
-				<PanelBody title="Layout & Design Settings" initialOpen={ false }>
-					{ layoutType === 'grid' && (
-						<SelectControl
-							label="Grid Columns"
-							value={ columns }
-							options={ [
-								{ label: '1 Column', value: 1 },
-								{ label: '2 Columns', value: 2 },
-								{ label: '3 Columns', value: 3 },
-								{ label: '4 Columns', value: 4 },
-							] }
-							onChange={ ( val ) => setAttributes( { columns: parseInt( val, 10 ) } ) }
-						/>
-					) }
-
-					<SelectControl
-						label="Card Style"
-						value={ cardStyle }
-						options={ [
-							{ label: 'Classic Blog Card', value: 'style-1' },
-							{ label: 'Minimalist', value: 'style-2' },
-							{ label: 'Magazine Overlay', value: 'style-3' },
-						] }
-						onChange={ ( val ) => setAttributes( { cardStyle: val } ) }
-					/>
-
-					<SelectControl
-						label="Card Spacing"
-						value={ spacing }
-						options={ [
-							{ label: 'Small', value: 'small' },
-							{ label: 'Medium', value: 'medium' },
-							{ label: 'Large', value: 'large' },
-						] }
-						onChange={ ( val ) => setAttributes( { spacing: val } ) }
-					/>
-
-					<RangeControl
-						label="Border Radius"
-						min={ 0 }
-						max={ 30 }
-						value={ borderRadius }
-						onChange={ ( val ) => setAttributes( { borderRadius: val } ) }
-					/>
-
-					<SelectControl
-						label="Shadow"
-						value={ shadow }
-						options={ [
-							{ label: 'None', value: 'none' },
-							{ label: 'Small', value: 'small' },
-							{ label: 'Medium', value: 'medium' },
-							{ label: 'Large', value: 'large' },
-						] }
-						onChange={ ( val ) => setAttributes( { shadow: val } ) }
-					/>
-
-					<SelectControl
-						label="Image Aspect Ratio"
-						value={ aspectRatio }
-						options={ [
-							{ label: '16:9 Wide', value: '16-9' },
-							{ label: '4:3 Standard', value: '4-3' },
-							{ label: '1:1 Square', value: '1-1' },
-						] }
-						onChange={ ( val ) => setAttributes( { aspectRatio: val } ) }
-					/>
-				</PanelBody>
-
-				<PanelBody title="Typography Settings" initialOpen={ false }>
-					<RangeControl
-						label="Title Font Size (px)"
-						min={ 12 }
-						max={ 48 }
-						value={ titleFontSize }
-						onChange={ ( val ) => setAttributes( { titleFontSize: val } ) }
-					/>
-					<RangeControl
-						label="Excerpt Font Size (px)"
-						min={ 10 }
-						max={ 24 }
-						value={ excerptFontSize }
-						onChange={ ( val ) => setAttributes( { excerptFontSize: val } ) }
-					/>
-				</PanelBody>
-
-				<PanelColorSettings
-					title="Color Settings"
-					initialOpen={ false }
-					colorSettings={ [
+				<TabPanel
+					className="lps-inspector-tabs"
+					activeClass="is-active"
+					tabs={ [
 						{
-							value: cardBgColor,
-							onChange: ( val ) => setAttributes( { cardBgColor: val || '' } ),
-							label: 'Card Background Color',
+							name: 'general',
+							title: 'General',
+							className: 'lps-tab-general',
 						},
 						{
-							value: titleColor,
-							onChange: ( val ) => setAttributes( { titleColor: val || '' } ),
-							label: 'Title Color',
-						},
-						{
-							value: metaColor,
-							onChange: ( val ) => setAttributes( { metaColor: val || '' } ),
-							label: 'Meta Text Color',
-						},
-						{
-							value: badgeBgColor,
-							onChange: ( val ) => setAttributes( { badgeBgColor: val || '' } ),
-							label: 'Category Badge Background',
-						},
-						{
-							value: badgeTextColor,
-							onChange: ( val ) => setAttributes( { badgeTextColor: val || '' } ),
-							label: 'Category Badge Text',
+							name: 'style',
+							title: 'Style',
+							className: 'lps-tab-style',
 						},
 					] }
-				/>
+				>
+					{ ( tab ) => {
+						if ( tab.name === 'general' ) {
+							return (
+								<>
+									<PanelBody title="Content Settings" initialOpen={ true }>
+										<SelectControl
+											label="Layout Type"
+											value={ layoutType }
+											options={ [
+												{ label: 'Grid Layout', value: 'grid' },
+												{ label: 'List Layout', value: 'list' },
+											] }
+											onChange={ ( val ) => setAttributes( { layoutType: val } ) }
+										/>
+
+										<RangeControl
+											label="Number of Posts"
+											min={ 1 }
+											max={ 20 }
+											value={ numberOfPosts }
+											onChange={ ( val ) => setAttributes( { numberOfPosts: val } ) }
+										/>
+
+										<div style={ { marginBottom: '16px' } }>
+											<span className="components-base-control__label" style={ { display: 'block', marginBottom: '8px' } }>
+												Filter by Categories
+											</span>
+											{ categoriesList.length === 0 ? (
+												<Spinner />
+											) : (
+												<div className="lps-category-select-list">
+													{ categoriesList.map( ( cat ) => (
+														<div key={ cat.id } className="lps-category-select-item">
+															<input
+																type="checkbox"
+																id={ `lps-editor-cat-${ cat.id }` }
+																checked={ categories.includes( cat.id ) }
+																onChange={ () => handleCategoryChange( cat.id ) }
+															/>
+															<label htmlFor={ `lps-editor-cat-${ cat.id }` }>{ cat.name }</label>
+														</div>
+													) ) }
+												</div>
+											)}
+										</div>
+
+										<SelectControl
+											label="Order"
+											value={ order }
+											options={ [
+												{ label: 'Newest First', value: 'desc' },
+												{ label: 'Oldest First', value: 'asc' },
+											] }
+											onChange={ ( val ) => setAttributes( { order: val } ) }
+										/>
+
+										<RangeControl
+											label="Offset (Skip posts)"
+											min={ 0 }
+											max={ 10 }
+											value={ offset }
+											onChange={ ( val ) => setAttributes( { offset: val } ) }
+										/>
+									</PanelBody>
+
+									<PanelBody title="Display Settings" initialOpen={ false }>
+										<ToggleControl
+											label="Show Featured Image"
+											checked={ showImage }
+											onChange={ ( val ) => setAttributes( { showImage: val } ) }
+										/>
+										<ToggleControl
+											label="Show Excerpt"
+											checked={ showExcerpt }
+											onChange={ ( val ) => setAttributes( { showExcerpt: val } ) }
+										/>
+										<ToggleControl
+											label="Show Date"
+											checked={ showDate }
+											onChange={ ( val ) => setAttributes( { showDate: val } ) }
+										/>
+										<ToggleControl
+											label="Show Author"
+											checked={ showAuthor }
+											onChange={ ( val ) => setAttributes( { showAuthor: val } ) }
+										/>
+										<ToggleControl
+											label="Show Read More Button"
+											checked={ showReadMore }
+											onChange={ ( val ) => setAttributes( { showReadMore: val } ) }
+										/>
+									</PanelBody>
+								</>
+							);
+						}
+
+						if ( tab.name === 'style' ) {
+							return (
+								<>
+									<PanelBody title="Layout & Design Settings" initialOpen={ true }>
+										{ layoutType === 'grid' && (
+											<SelectControl
+												label="Grid Columns"
+												value={ columns }
+												options={ [
+													{ label: '1 Column', value: 1 },
+													{ label: '2 Columns', value: 2 },
+													{ label: '3 Columns', value: 3 },
+													{ label: '4 Columns', value: 4 },
+												] }
+												onChange={ ( val ) => setAttributes( { columns: parseInt( val, 10 ) } ) }
+											/>
+										) }
+
+										<SelectControl
+											label="Card Style"
+											value={ cardStyle }
+											options={ [
+												{ label: 'Classic Blog Card', value: 'style-1' },
+												{ label: 'Minimalist', value: 'style-2' },
+												{ label: 'Magazine Overlay', value: 'style-3' },
+											] }
+											onChange={ ( val ) => setAttributes( { cardStyle: val } ) }
+										/>
+
+										<SelectControl
+											label="Card Spacing"
+											value={ spacing }
+											options={ [
+												{ label: 'Small', value: 'small' },
+												{ label: 'Medium', value: 'medium' },
+												{ label: 'Large', value: 'large' },
+											] }
+											onChange={ ( val ) => setAttributes( { spacing: val } ) }
+										/>
+
+										<RangeControl
+											label="Border Radius"
+											min={ 0 }
+											max={ 30 }
+											value={ borderRadius }
+											onChange={ ( val ) => setAttributes( { borderRadius: val } ) }
+										/>
+
+										<SelectControl
+											label="Shadow"
+											value={ shadow }
+											options={ [
+												{ label: 'None', value: 'none' },
+												{ label: 'Small', value: 'small' },
+												{ label: 'Medium', value: 'medium' },
+												{ label: 'Large', value: 'large' },
+											] }
+											onChange={ ( val ) => setAttributes( { shadow: val } ) }
+										/>
+
+										<SelectControl
+											label="Image Aspect Ratio"
+											value={ aspectRatio }
+											options={ [
+												{ label: '16:9 Wide', value: '16-9' },
+												{ label: '4:3 Standard', value: '4-3' },
+												{ label: '1:1 Square', value: '1-1' },
+											] }
+											onChange={ ( val ) => setAttributes( { aspectRatio: val } ) }
+										/>
+									</PanelBody>
+
+									<PanelBody title="Typography Settings" initialOpen={ false }>
+										<RangeControl
+											label="Title Font Size (px)"
+											min={ 12 }
+											max={ 48 }
+											value={ titleFontSize }
+											onChange={ ( val ) => setAttributes( { titleFontSize: val } ) }
+										/>
+										<RangeControl
+											label="Excerpt Font Size (px)"
+											min={ 10 }
+											max={ 24 }
+											value={ excerptFontSize }
+											onChange={ ( val ) => setAttributes( { excerptFontSize: val } ) }
+										/>
+									</PanelBody>
+
+									<PanelColorSettings
+										title="Color Settings"
+										initialOpen={ false }
+										colorSettings={ [
+											{
+												value: cardBgColor,
+												onChange: ( val ) => setAttributes( { cardBgColor: val || '' } ),
+												label: 'Card Background Color',
+											},
+											{
+												value: titleColor,
+												onChange: ( val ) => setAttributes( { titleColor: val || '' } ),
+												label: 'Title Color',
+											},
+											{
+												value: metaColor,
+												onChange: ( val ) => setAttributes( { metaColor: val || '' } ),
+												label: 'Meta Text Color',
+											},
+											{
+												value: badgeBgColor,
+												onChange: ( val ) => setAttributes( { badgeBgColor: val || '' } ),
+												label: 'Category Badge Background',
+											},
+											{
+												value: badgeTextColor,
+												onChange: ( val ) => setAttributes( { badgeTextColor: val || '' } ),
+												label: 'Category Badge Text',
+											},
+										] }
+									/>
+								</>
+							);
+						}
+					} }
+				</TabPanel>
 			</InspectorControls>
 
 			<div { ...blockProps }>

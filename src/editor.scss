@@ -41,3 +41,48 @@
 		}
 	}
 }
+
+// Sidebar inspector tab navigation styling
+.lps-inspector-tabs {
+	.components-tab-panel__tabs {
+		display: flex;
+		border-bottom: 1px solid #e0e0e0;
+		margin-bottom: 8px;
+		background: #fafafa;
+		position: sticky;
+		top: 0;
+		z-index: 10;
+
+		button.components-tab-panel__tabs-item {
+			flex: 1;
+			text-align: center;
+			padding: 12px 6px;
+			font-size: 13px;
+			font-weight: 500;
+			color: #757575;
+			border: none;
+			border-bottom: 2px solid transparent;
+			background: transparent;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			box-shadow: none !important;
+			margin: 0;
+			border-radius: 0;
+
+			&:hover {
+				color: #1e1e1e;
+				background: rgba(0, 0, 0, 0.02);
+			}
+
+			&.is-active {
+				color: var(--wp-admin-theme-color, #007cba);
+				border-bottom: 2px solid var(--wp-admin-theme-color, #007cba);
+				font-weight: 600;
+			}
+		}
+	}
+
+	.components-tab-panel__tab-content {
+		padding-top: 4px;
+	}
+}
