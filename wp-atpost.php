@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name:       Latest Posts Showcase
+ * Plugin Name:       WP atPost
  * Description:       Showcase your latest blog posts with beautiful customizable layouts and grid patterns.
  * Version:           1.0.0
  * Author:            Ataurwd
  * Author URI:        https://github.com/ataurwd
  * License:           GPL-2.0-or-later
- * Text Domain:       latest-posts-showcase
+ * Text Domain:       wp-atpost
  */
 
 // Prevent direct access.
@@ -17,20 +17,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Load plugin textdomain for translations.
  */
-function lps_load_textdomain() {
-	load_plugin_textdomain( 'latest-posts-showcase', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+function atpx_load_textdomain() {
+	load_plugin_textdomain( 'wp-atpost', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
-add_action( 'init', 'lps_load_textdomain' );
+add_action( 'init', 'atpx_load_textdomain' );
 
 /**
  * Registers the Gutenberg block.
  */
-function lps_register_latest_posts_showcase_block() {
+function atpx_register_atpost_block() {
 	register_block_type( __DIR__ . '/build', array(
-		'render_callback' => 'lps_render_latest_posts_showcase',
+		'render_callback' => 'atpx_render_atpost',
 	) );
 }
-add_action( 'init', 'lps_register_latest_posts_showcase_block' );
+add_action( 'init', 'atpx_register_atpost_block' );
 
 /**
  * Server-side rendering callback for the Gutenberg block.
@@ -39,7 +39,7 @@ add_action( 'init', 'lps_register_latest_posts_showcase_block' );
  * @param string $content Block content.
  * @return string Rendered block HTML.
  */
-function lps_render_latest_posts_showcase( $attributes, $content ) {
+function atpx_render_atpost( $attributes, $content ) {
 	// Extract attributes and assign defaults.
 	$number_of_posts = isset( $attributes['numberOfPosts'] ) ? intval( $attributes['numberOfPosts'] ) : 6;
 	$categories      = isset( $attributes['categories'] ) ? $attributes['categories'] : array();
@@ -95,37 +95,37 @@ function lps_render_latest_posts_showcase( $attributes, $content ) {
 	// Handle empty states.
 	if ( ! $query->have_posts() ) {
 		$empty_message = ! empty( $categories )
-			? __( 'No articles available in this category.', 'latest-posts-showcase' )
-			: __( 'No posts found.', 'latest-posts-showcase' );
-		return '<div class="lps-empty-state"><p>' . esc_html( $empty_message ) . '</p></div>';
+			? __( 'No articles available in this category.', 'wp-atpost' )
+			: __( 'No posts found.', 'wp-atpost' );
+		return '<div class="atpx-empty-state"><p>' . esc_html( $empty_message ) . '</p></div>';
 	}
 
 	// Dynamic classes and custom inline properties.
 	$classes = array(
-		'wp-block-lps-latest-posts-showcase',
-		'lps-layout-' . esc_attr( $layout_type ),
-		'lps-style-' . esc_attr( $card_style ),
-		'lps-spacing-' . esc_attr( $spacing ),
-		'lps-shadow-' . esc_attr( $shadow ),
-		'lps-ratio-' . esc_attr( $aspect_ratio ),
+		'wp-block-atpx-wp-atpost',
+		'atpx-layout-' . esc_attr( $layout_type ),
+		'atpx-style-' . esc_attr( $card_style ),
+		'atpx-spacing-' . esc_attr( $spacing ),
+		'atpx-shadow-' . esc_attr( $shadow ),
+		'atpx-ratio-' . esc_attr( $aspect_ratio ),
 	);
 
-	$inline_styles = "--lps-columns: " . intval( $columns ) . "; --lps-border-radius-val: " . intval( $border_radius ) . "px; --lps-title-font-size: " . intval( $title_font_size ) . "px; --lps-excerpt-font-size: " . intval( $excerpt_font_size ) . "px;";
+	$inline_styles = "--atpx-columns: " . intval( $columns ) . "; --atpx-border-radius-val: " . intval( $border_radius ) . "px; --atpx-title-font-size: " . intval( $title_font_size ) . "px; --atpx-excerpt-font-size: " . intval( $excerpt_font_size ) . "px;";
 
 	if ( ! empty( $title_color ) ) {
-		$inline_styles .= " --lps-title-color: " . esc_attr( $title_color ) . ";";
+		$inline_styles .= " --atpx-title-color: " . esc_attr( $title_color ) . ";";
 	}
 	if ( ! empty( $meta_color ) ) {
-		$inline_styles .= " --lps-meta-color: " . esc_attr( $meta_color ) . ";";
+		$inline_styles .= " --atpx-meta-color: " . esc_attr( $meta_color ) . ";";
 	}
 	if ( ! empty( $badge_bg_color ) ) {
-		$inline_styles .= " --lps-badge-bg-color: " . esc_attr( $badge_bg_color ) . ";";
+		$inline_styles .= " --atpx-badge-bg-color: " . esc_attr( $badge_bg_color ) . ";";
 	}
 	if ( ! empty( $badge_text_color ) ) {
-		$inline_styles .= " --lps-badge-text-color: " . esc_attr( $badge_text_color ) . ";";
+		$inline_styles .= " --atpx-badge-text-color: " . esc_attr( $badge_text_color ) . ";";
 	}
 	if ( ! empty( $card_bg_color ) ) {
-		$inline_styles .= " --lps-card-bg-color: " . esc_attr( $card_bg_color ) . ";";
+		$inline_styles .= " --atpx-card-bg-color: " . esc_attr( $card_bg_color ) . ";";
 	}
 
 	$wrapper_attributes = get_block_wrapper_attributes( array(
@@ -141,13 +141,13 @@ function lps_render_latest_posts_showcase( $attributes, $content ) {
 			$query->the_post();
 			$post_id = get_the_ID();
 			?>
-			<a href="<?php echo esc_url( get_permalink() ); ?>" class="lps-post-card">
+			<a href="<?php echo esc_url( get_permalink() ); ?>" class="atpx-post-card">
 				<?php if ( $show_image && 'style-2' !== $card_style ) : ?>
-					<div class="lps-post-image-wrapper">
+					<div class="atpx-post-image-wrapper">
 						<?php
 						$post_categories = get_the_category( $post_id );
 						if ( ! empty( $post_categories ) ) {
-							echo '<span class="lps-post-category-tag">' . esc_html( $post_categories[0]->name ) . '</span>';
+							echo '<span class="atpx-post-category-tag">' . esc_html( $post_categories[0]->name ) . '</span>';
 						}
 
 						if ( has_post_thumbnail() ) {
@@ -159,34 +159,34 @@ function lps_render_latest_posts_showcase( $attributes, $content ) {
 					</div>
 				<?php endif; ?>
 
-				<div class="lps-post-content">
+				<div class="atpx-post-content">
 					<?php if ( $show_date || $show_author ) : ?>
-						<div class="lps-post-meta">
+						<div class="atpx-post-meta">
 							<?php if ( $show_date ) : ?>
-								<span class="lps-post-date"><?php echo esc_html( get_the_date() ); ?></span>
+								<span class="atpx-post-date"><?php echo esc_html( get_the_date() ); ?></span>
 							<?php endif; ?>
 							<?php if ( $show_date && $show_author ) : ?>
-								<span class="lps-meta-sep">•</span>
+								<span class="atpx-meta-sep">•</span>
 							<?php endif; ?>
 							<?php if ( $show_author ) : ?>
-								<span class="lps-post-author"><?php echo esc_html( sprintf( esc_html__( 'By %s', 'latest-posts-showcase' ), esc_html( get_the_author() ) ) ); ?></span>
+								<span class="atpx-post-author"><?php echo esc_html( sprintf( esc_html__( 'By %s', 'wp-atpost' ), esc_html( get_the_author() ) ) ); ?></span>
 							<?php endif; ?>
 						</div>
 					<?php endif; ?>
 
-					<h3 class="lps-post-title">
+					<h3 class="atpx-post-title">
 						<?php echo esc_html( get_the_title() ); ?>
 					</h3>
 
 					<?php if ( $show_excerpt && 'style-1' === $card_style ) : ?>
-						<div class="lps-post-excerpt">
+						<div class="atpx-post-excerpt">
 							<?php echo wp_kses_post( get_the_excerpt() ); ?>
 						</div>
 					<?php endif; ?>
 
 					<?php if ( $show_read_more && 'style-1' === $card_style ) : ?>
-						<span class="lps-post-readmore">
-							<?php esc_html_e( 'Read More', 'latest-posts-showcase' ); ?>
+						<span class="atpx-post-readmore">
+							<?php esc_html_e( 'Read More', 'wp-atpost' ); ?>
 							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
 								<line x1="5" y1="12" x2="19" y2="12"></line>
 								<polyline points="12 5 19 12 12 19"></polyline>

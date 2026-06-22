@@ -86,19 +86,19 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	// Determine custom CSS custom variables inline styles
 	const inlineStyles = {
-		'--lps-columns': columns,
-		'--lps-border-radius-val': `${ borderRadius }px`,
-		'--lps-title-color': titleColor || undefined,
-		'--lps-title-font-size': `${ titleFontSize }px`,
-		'--lps-meta-color': metaColor || undefined,
-		'--lps-badge-bg-color': badgeBgColor || undefined,
-		'--lps-badge-text-color': badgeTextColor || undefined,
-		'--lps-excerpt-font-size': `${ excerptFontSize }px`,
-		'--lps-card-bg-color': cardBgColor || undefined,
+		'--atpx-columns': columns,
+		'--atpx-border-radius-val': `${ borderRadius }px`,
+		'--atpx-title-color': titleColor || undefined,
+		'--atpx-title-font-size': `${ titleFontSize }px`,
+		'--atpx-meta-color': metaColor || undefined,
+		'--atpx-badge-bg-color': badgeBgColor || undefined,
+		'--atpx-badge-text-color': badgeTextColor || undefined,
+		'--atpx-excerpt-font-size': `${ excerptFontSize }px`,
+		'--atpx-card-bg-color': cardBgColor || undefined,
 	};
 
 	const blockProps = useBlockProps( {
-		className: `lps-layout-${ layoutType } lps-style-${ cardStyle } lps-spacing-${ spacing } lps-shadow-${ shadow } lps-ratio-${ aspectRatio }`,
+		className: `atpx-layout-${ layoutType } atpx-style-${ cardStyle } atpx-spacing-${ spacing } atpx-shadow-${ shadow } atpx-ratio-${ aspectRatio }`,
 		style: inlineStyles,
 	} );
 
@@ -115,18 +115,18 @@ export default function Edit( { attributes, setAttributes } ) {
 		<>
 			<InspectorControls>
 				<TabPanel
-					className="lps-inspector-tabs"
+					className="atpx-inspector-tabs"
 					activeClass="is-active"
 					tabs={ [
 						{
 							name: 'general',
 							title: 'General',
-							className: 'lps-tab-general',
+							className: 'atpx-tab-general',
 						},
 						{
 							name: 'style',
 							title: 'Style',
-							className: 'lps-tab-style',
+							className: 'atpx-tab-style',
 						},
 					] }
 				>
@@ -166,16 +166,16 @@ export default function Edit( { attributes, setAttributes } ) {
 											{ categoriesList.length === 0 ? (
 												<Spinner />
 											) : (
-												<div className="lps-category-select-list">
+												<div className="atpx-category-select-list">
 													{ categoriesList.map( ( cat ) => (
-														<div key={ cat.id } className="lps-category-select-item">
+														<div key={ cat.id } className="atpx-category-select-item">
 															<input
 																type="checkbox"
-																id={ `lps-editor-cat-${ cat.id }` }
+																id={ `atpx-editor-cat-${ cat.id }` }
 																checked={ categories.includes( cat.id ) }
 																onChange={ () => handleCategoryChange( cat.id ) }
 															/>
-															<label htmlFor={ `lps-editor-cat-${ cat.id }` }>{ cat.name }</label>
+															<label htmlFor={ `atpx-editor-cat-${ cat.id }` }>{ cat.name }</label>
 														</div>
 													) ) }
 												</div>
@@ -189,16 +189,16 @@ export default function Edit( { attributes, setAttributes } ) {
 											{ categoriesList.length === 0 ? (
 												<Spinner />
 											) : (
-												<div className="lps-category-select-list">
+												<div className="atpx-category-select-list">
 													{ categoriesList.map( ( cat ) => (
-														<div key={ cat.id } className="lps-category-select-item">
+														<div key={ cat.id } className="atpx-category-select-item">
 															<input
 																type="checkbox"
-																id={ `lps-editor-exclude-cat-${ cat.id }` }
+																id={ `atpx-editor-exclude-cat-${ cat.id }` }
 																checked={ excludeCategories.includes( cat.id ) }
 																onChange={ () => handleExcludeCategoryChange( cat.id ) }
 															/>
-															<label htmlFor={ `lps-editor-exclude-cat-${ cat.id }` }>{ cat.name }</label>
+															<label htmlFor={ `atpx-editor-exclude-cat-${ cat.id }` }>{ cat.name }</label>
 														</div>
 													) ) }
 												</div>
@@ -384,26 +384,26 @@ export default function Edit( { attributes, setAttributes } ) {
 
 			<div { ...blockProps }>
 				{ posts === undefined && (
-					<div className="lps-skeleton-loader">
+					<div className="atpx-skeleton-loader">
 						{ Array.from( { length: Math.min( numberOfPosts, 3 ) } ).map( ( _, i ) => (
-							<div key={ i } className="lps-skeleton-card">
+							<div key={ i } className="atpx-skeleton-card">
 								{ showImage && cardStyle !== 'style-2' && (
-									<div className="lps-skeleton-img"></div>
+									<div className="atpx-skeleton-img"></div>
 								) }
-								<div className="lps-skeleton-content">
+								<div className="atpx-skeleton-content">
 									{ ( showDate || showAuthor ) && (
-										<div className="lps-skeleton-meta"></div>
+										<div className="atpx-skeleton-meta"></div>
 									) }
-									<div className="lps-skeleton-title"></div>
+									<div className="atpx-skeleton-title"></div>
 									{ showExcerpt && cardStyle === 'style-1' && (
-										<div className="lps-skeleton-text">
+										<div className="atpx-skeleton-text">
 											<span></span>
 											<span></span>
 											<span></span>
 										</div>
 									) }
 									{ showReadMore && cardStyle === 'style-1' && (
-										<div className="lps-skeleton-btn"></div>
+										<div className="atpx-skeleton-btn"></div>
 									) }
 								</div>
 							</div>
@@ -412,7 +412,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				) }
 
 				{ posts !== undefined && ( posts === null || posts.length === 0 ) && (
-					<div className="lps-empty-state">
+					<div className="atpx-empty-state">
 						<p>
 							{ categories && categories.length > 0
 								? 'No articles available in this category.'
@@ -438,11 +438,11 @@ export default function Edit( { attributes, setAttributes } ) {
 						const firstCategory = postCats && postCats.length > 0 ? postCats[0].name : '';
 
 						return (
-							<div key={ post.id } className="lps-post-card">
+							<div key={ post.id } className="atpx-post-card">
 								{ showImage && cardStyle !== 'style-2' && (
-									<div className="lps-post-image-wrapper">
+									<div className="atpx-post-image-wrapper">
 										{ firstCategory && (
-											<span className="lps-post-category-tag">{ firstCategory }</span>
+											<span className="atpx-post-category-tag">{ firstCategory }</span>
 										) }
 										{ featuredImage ? (
 											<img src={ featuredImage } alt={ post.title.rendered } />
@@ -456,31 +456,31 @@ export default function Edit( { attributes, setAttributes } ) {
 									</div>
 								) }
 
-								<div className="lps-post-content">
+								<div className="atpx-post-content">
 									{ ( showDate || showAuthor ) && (
-										<div className="lps-post-meta">
+										<div className="atpx-post-meta">
 											{ showDate && (
-												<span className="lps-post-date">{ formatDate( post.date ) }</span>
+												<span className="atpx-post-date">{ formatDate( post.date ) }</span>
 											) }
-											{ showDate && showAuthor && <span className="lps-meta-sep">•</span> }
+											{ showDate && showAuthor && <span className="atpx-meta-sep">•</span> }
 											{ showAuthor && (
-												<span className="lps-post-author">By { authorName }</span>
+												<span className="atpx-post-author">By { authorName }</span>
 											) }
 										</div>
 									) }
 
-									<h3 className="lps-post-title">
+									<h3 class="atpx-post-title">
 										<RawHTML>{ post.title.rendered }</RawHTML>
 									</h3>
 
 									{ showExcerpt && cardStyle === 'style-1' && (
-										<div className="lps-post-excerpt">
+										<div className="atpx-post-excerpt">
 											<RawHTML>{ post.excerpt.rendered }</RawHTML>
 										</div>
 									) }
 
 									{ showReadMore && cardStyle === 'style-1' && (
-										<span className="lps-post-readmore">
+										<span className="atpx-post-readmore">
 											Read More
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
 												<line x1="5" y1="12" x2="19" y2="12"></line>

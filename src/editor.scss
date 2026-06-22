@@ -1,9 +1,9 @@
 /**
- * Editor-specific styles for Latest Posts Showcase.
+ * Editor-specific styles for WP atPost.
  */
-.wp-block-lps-latest-posts-showcase {
+.wp-block-atpx-wp-atpost {
 	// Inside editor, links should not be clickable to prevent editor navigation
-	.lps-post-card {
+	.atpx-post-card {
 		pointer-events: none;
 		user-select: none;
 	}
@@ -15,7 +15,7 @@
 }
 
 // Sidebar category checklist design
-.lps-category-select-list {
+.atpx-category-select-list {
 	max-height: 180px;
 	overflow-y: auto;
 	border: 1px solid #e0e0e0;
@@ -24,7 +24,7 @@
 	background: #ffffff;
 	margin-top: 8px;
 
-	.lps-category-select-item {
+	.atpx-category-select-item {
 		margin-bottom: 6px;
 		display: flex;
 		align-items: center;
@@ -43,7 +43,7 @@
 }
 
 // Sidebar inspector tab navigation styling
-.lps-inspector-tabs {
+.atpx-inspector-tabs {
 	.components-tab-panel__tabs {
 		display: flex;
 		border-bottom: 1px solid #e0e0e0;
@@ -88,7 +88,7 @@
 }
 
 // Pulse animation keyframes
-@keyframes lpsPulse {
+@keyframes atpxPulse {
 	0% {
 		opacity: 0.65;
 	}
@@ -101,7 +101,7 @@
 }
 
 // Skeleton Cards Loader
-.lps-skeleton-loader {
+.atpx-skeleton-loader {
 	grid-column: 1 / -1;
 	display: inherit;
 	grid-template-columns: inherit;
@@ -109,37 +109,37 @@
 	width: 100%;
 }
 
-.lps-skeleton-card {
-	background: var(--lps-card-bg-color, #ffffff);
+.atpx-skeleton-card {
+	background: var(--atpx-card-bg-color, #ffffff);
 	border: 1px solid rgba(0, 0, 0, 0.05);
-	border-radius: var(--lps-border-radius-val);
+	border-radius: var(--atpx-border-radius-val);
 	overflow: hidden;
-	animation: lpsPulse 1.5s ease-in-out infinite;
+	animation: atpxPulse 1.5s ease-in-out infinite;
 	display: flex;
 	flex-direction: column;
-	border-radius: var(--lps-border-radius-val);
+	border-radius: var(--atpx-border-radius-val);
 
-	.lps-skeleton-img {
+	.atpx-skeleton-img {
 		width: 100%;
-		aspect-ratio: var(--lps-aspect-ratio-val);
+		aspect-ratio: var(--atpx-aspect-ratio-val);
 		background: #e2e8f0;
 	}
 
-	.lps-skeleton-content {
+	.atpx-skeleton-content {
 		padding: 20px;
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
 		flex-grow: 1;
 
-		.lps-skeleton-meta {
+		.atpx-skeleton-meta {
 			width: 40%;
 			height: 12px;
 			background: #e2e8f0;
 			border-radius: 4px;
 		}
 
-		.lps-skeleton-title {
+		.atpx-skeleton-title {
 			width: 85%;
 			height: 20px;
 			background: #cbd5e1;
@@ -147,7 +147,7 @@
 			margin: 4px 0;
 		}
 
-		.lps-skeleton-text {
+		.atpx-skeleton-text {
 			display: flex;
 			flex-direction: column;
 			gap: 8px;
@@ -167,7 +167,7 @@
 			}
 		}
 
-		.lps-skeleton-btn {
+		.atpx-skeleton-btn {
 			width: 30%;
 			height: 14px;
 			background: #e2e8f0;
@@ -178,16 +178,16 @@
 }
 
 // Map skeleton card changes inside List Layout
-.lps-layout-list .lps-skeleton-loader {
+.atpx-layout-list .atpx-skeleton-loader {
 	display: flex;
 	flex-direction: column;
-	gap: var(--lps-spacing-val);
+	gap: var(--atpx-spacing-val);
 
-	.lps-skeleton-card {
+	.atpx-skeleton-card {
 		flex-direction: row !important;
 		align-items: stretch;
 
-		.lps-skeleton-img {
+		.atpx-skeleton-img {
 			width: 35%;
 			max-width: 300px;
 			aspect-ratio: auto;
@@ -195,7 +195,7 @@
 			flex-shrink: 0;
 		}
 
-		.lps-skeleton-content {
+		.atpx-skeleton-content {
 			padding: 24px;
 			width: 65%;
 			justify-content: center;
@@ -203,13 +203,13 @@
 	}
 
 	@media (max-width: 600px) {
-		.lps-skeleton-card {
+		.atpx-skeleton-card {
 			flex-direction: column !important;
 			
-			.lps-skeleton-img {
+			.atpx-skeleton-img {
 				width: 100%;
 				max-width: none;
-				aspect-ratio: var(--lps-aspect-ratio-val);
+				aspect-ratio: var(--atpx-aspect-ratio-val);
 				min-height: auto;
 			}
 		}
@@ -217,12 +217,12 @@
 }
 
 // Map skeleton card changes inside Magazine Layout
-.lps-style-style-3 .lps-skeleton-card {
+.atpx-style-style-3 .atpx-skeleton-card {
 	position: relative;
-	aspect-ratio: var(--lps-aspect-ratio-val);
+	aspect-ratio: var(--atpx-aspect-ratio-val);
 	min-height: 280px;
 
-	.lps-skeleton-img {
+	.atpx-skeleton-img {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -231,53 +231,53 @@
 		z-index: 1;
 	}
 
-	.lps-skeleton-content {
+	.atpx-skeleton-content {
 		position: relative;
 		z-index: 2;
 		justify-content: flex-end;
 		background: linear-gradient(to top, rgba(0,0,0,0.15) 0%, transparent 100%);
 		
-		.lps-skeleton-title {
+		.atpx-skeleton-title {
 			background: #f1f5f9;
 		}
 
-		.lps-skeleton-meta {
+		.atpx-skeleton-meta {
 			background: #cbd5e1;
 		}
 
-		.lps-skeleton-text, .lps-skeleton-btn {
+		.atpx-skeleton-text, .atpx-skeleton-btn {
 			display: none !important;
 		}
 	}
 }
 
 // Map skeleton card changes inside Minimalist Layout
-.lps-style-style-2 .lps-skeleton-card {
+.atpx-style-style-2 .atpx-skeleton-card {
 	background: transparent;
 	border: none;
 	border-bottom: 1px solid #e5e7eb;
 	border-radius: 0;
 	padding-bottom: 16px;
 
-	.lps-skeleton-img {
+	.atpx-skeleton-img {
 		display: none !important;
 	}
 
-	.lps-skeleton-content {
+	.atpx-skeleton-content {
 		padding: 8px 0;
 		gap: 8px;
 
-		.lps-skeleton-title {
+		.atpx-skeleton-title {
 			width: 70%;
 			height: 16px;
 		}
 
-		.lps-skeleton-meta {
+		.atpx-skeleton-meta {
 			width: 30%;
 			height: 10px;
 		}
 
-		.lps-skeleton-text, .lps-skeleton-btn {
+		.atpx-skeleton-text, .atpx-skeleton-btn {
 			display: none !important;
 		}
 	}

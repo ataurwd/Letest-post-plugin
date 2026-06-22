@@ -1,5 +1,5 @@
 {
-  "name": "latest-posts-showcase",
+  "name": "wp-atpost",
   "version": "1.0.0",
   "description": "Gutenberg block to showcase latest posts using dynamic Gutenberg templates.",
   "author": "Antigravity",

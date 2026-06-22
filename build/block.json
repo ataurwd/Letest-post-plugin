@@ -1,9 +1,9 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "lps/latest-posts-showcase",
+  "name": "atpx/wp-atpost",
   "version": "1.0.0",
-  "title": "Latest Posts Showcase",
+  "title": "WP atPost",
   "category": "widgets",
   "icon": "grid-view",
   "description": "Showcase your latest blog posts with beautiful customizable layouts and grid patterns.",
@@ -122,7 +122,7 @@
       "default": []
     }
   },
-  "textdomain": "latest-posts-showcase",
+  "textdomain": "wp-atpost",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
   "style": "file:./style-index.css"

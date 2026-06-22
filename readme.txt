@@ -1,4 +1,4 @@
-=== Latest Posts Showcase ===
+=== WP atPost ===
 Contributors: ataurwd
 Tags: latest posts, post showcase, query loop, recent posts, blog grid, list layout
 Requires at least: 6.0
@@ -12,16 +12,16 @@ Showcase your latest blog posts with beautiful customizable layouts, grid design
 
 == Description ==
 
-WordPress includes the Query Loop block, but many users find it too complex for a simple task: displaying recent posts anywhere on a page. The Latest Posts Showcase Block provides a fast, beginner-friendly way to display posts with attractive layouts and filtering options directly inside Gutenberg.
+WordPress includes the Query Loop block, but many users find it too complex for a simple task: displaying recent posts anywhere on a page. The WP atPost Block provides a fast, beginner-friendly way to display posts with attractive layouts and filtering options directly inside Gutenberg.
 
 Simply insert the block, pick a style (Classic, Minimalist, or Magazine), select the categories you want to include or exclude, and display your posts in a responsive Grid or List system. Everything is customizable directly inside the sidebar editor using General and Style settings tabs!
 
 == Installation ==
 
-1. Upload the `latest-posts-showcase` folder to the `/wp-content/plugins/` directory.
+1. Upload the `wp-atpost` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Open any page/post in the Gutenberg editor.
-4. Search for "Latest Posts Showcase" and insert the block.
+4. Search for "WP atPost" and insert the block.
 
 == Frequently Asked Questions ==
 
@@ -37,7 +37,7 @@ Yes! This block uses server-side rendering (dynamic block rendering), meaning th
 == Changelog ==
 
 = 1.0.0 =
-* Initial release of the Latest Posts Showcase Block.
+* Initial release of the WP atPost Block.
 * Grid and List layouts.
 * Classic, Minimalist, and Magazine overlay styles.
 * Color and typography customizations.
