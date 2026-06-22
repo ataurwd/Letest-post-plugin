@@ -106,6 +106,17 @@
     "cardBgColor": {
       "type": "string",
       "default": ""
+    },
+    "ignoreStickyPosts": {
+      "type": "boolean",
+      "default": true
+    },
+    "excludeCategories": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "default": []
     }
   },
   "textdomain": "latest-posts-showcase",

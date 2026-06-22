@@ -34,7 +34,9 @@ export default function Edit( { attributes, setAttributes } ) {
 		badgeBgColor,
 		badgeTextColor,
 		excerptFontSize,
-		cardBgColor
+		cardBgColor,
+		ignoreStickyPosts,
+		excludeCategories
 	} = attributes;
 
 	// Fetch categories for the sidebar checklist filter
@@ -52,10 +54,13 @@ export default function Edit( { attributes, setAttributes } ) {
 	if ( categories && categories.length > 0 ) {
 		queryArgs.categories = categories;
 	}
+	if ( excludeCategories && excludeCategories.length > 0 ) {
+		queryArgs.categories_exclude = excludeCategories;
+	}
 
 	const posts = useSelect( ( select ) => {
 		return select( 'core' ).getEntityRecords( 'postType', 'post', queryArgs );
-	}, [ numberOfPosts, categories, order, offset ] );
+	}, [ numberOfPosts, categories, excludeCategories, order, offset ] );
 
 	// Handle category checklist checkbox changes
 	const handleCategoryChange = ( categoryId ) => {
@@ -66,6 +71,17 @@ export default function Edit( { attributes, setAttributes } ) {
 			newCategories = [ ...categories, categoryId ];
 		}
 		setAttributes( { categories: newCategories } );
+	};
+
+	// Handle exclude category changes
+	const handleExcludeCategoryChange = ( categoryId ) => {
+		let newExclusions;
+		if ( excludeCategories.includes( categoryId ) ) {
+			newExclusions = excludeCategories.filter( ( id ) => id !== categoryId );
+		} else {
+			newExclusions = [ ...excludeCategories, categoryId ];
+		}
+		setAttributes( { excludeCategories: newExclusions } );
 	};
 
 	// Determine custom CSS custom variables inline styles
@@ -137,6 +153,12 @@ export default function Edit( { attributes, setAttributes } ) {
 											onChange={ ( val ) => setAttributes( { numberOfPosts: val } ) }
 										/>
 
+										<ToggleControl
+											label="Prioritize Sticky Posts"
+											checked={ ! ignoreStickyPosts }
+											onChange={ ( val ) => setAttributes( { ignoreStickyPosts: ! val } ) }
+										/>
+
 										<div style={ { marginBottom: '16px' } }>
 											<span className="components-base-control__label" style={ { display: 'block', marginBottom: '8px' } }>
 												Filter by Categories
@@ -154,6 +176,29 @@ export default function Edit( { attributes, setAttributes } ) {
 																onChange={ () => handleCategoryChange( cat.id ) }
 															/>
 															<label htmlFor={ `lps-editor-cat-${ cat.id }` }>{ cat.name }</label>
+														</div>
+													) ) }
+												</div>
+											)}
+										</div>
+
+										<div style={ { marginBottom: '16px' } }>
+											<span className="components-base-control__label" style={ { display: 'block', marginBottom: '8px' } }>
+												Exclude Categories
+											</span>
+											{ categoriesList.length === 0 ? (
+												<Spinner />
+											) : (
+												<div className="lps-category-select-list">
+													{ categoriesList.map( ( cat ) => (
+														<div key={ cat.id } className="lps-category-select-item">
+															<input
+																type="checkbox"
+																id={ `lps-editor-exclude-cat-${ cat.id }` }
+																checked={ excludeCategories.includes( cat.id ) }
+																onChange={ () => handleExcludeCategoryChange( cat.id ) }
+															/>
+															<label htmlFor={ `lps-editor-exclude-cat-${ cat.id }` }>{ cat.name }</label>
 														</div>
 													) ) }
 												</div>
@@ -339,9 +384,30 @@ export default function Edit( { attributes, setAttributes } ) {
 
 			<div { ...blockProps }>
 				{ posts === undefined && (
-					<div className="lps-loading-state">
-						<div className="lps-spinner"></div>
-						<p>Loading posts...</p>
+					<div className="lps-skeleton-loader">
+						{ Array.from( { length: Math.min( numberOfPosts, 3 ) } ).map( ( _, i ) => (
+							<div key={ i } className="lps-skeleton-card">
+								{ showImage && cardStyle !== 'style-2' && (
+									<div className="lps-skeleton-img"></div>
+								) }
+								<div className="lps-skeleton-content">
+									{ ( showDate || showAuthor ) && (
+										<div className="lps-skeleton-meta"></div>
+									) }
+									<div className="lps-skeleton-title"></div>
+									{ showExcerpt && cardStyle === 'style-1' && (
+										<div className="lps-skeleton-text">
+											<span></span>
+											<span></span>
+											<span></span>
+										</div>
+									) }
+									{ showReadMore && cardStyle === 'style-1' && (
+										<div className="lps-skeleton-btn"></div>
+									) }
+								</div>
+							</div>
+						) ) }
 					</div>
 				) }
 

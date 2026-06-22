@@ -68,11 +68,14 @@ function lps_render_latest_posts_showcase( $attributes, $content ) {
 	$excerpt_font_size = isset( $attributes['excerptFontSize'] ) ? intval( $attributes['excerptFontSize'] ) : 14;
 	$card_bg_color     = isset( $attributes['cardBgColor'] ) ? sanitize_text_field( $attributes['cardBgColor'] ) : '';
 
+	$ignore_sticky_posts = isset( $attributes['ignoreStickyPosts'] ) ? (bool) $attributes['ignoreStickyPosts'] : true;
+	$exclude_categories  = isset( $attributes['excludeCategories'] ) ? $attributes['excludeCategories'] : array();
+
 	// Build WP Query arguments.
 	$args = array(
 		'posts_per_page'      => $number_of_posts,
 		'post_status'         => 'publish',
-		'ignore_sticky_posts' => 1,
+		'ignore_sticky_posts' => $ignore_sticky_posts ? 1 : 0,
 		'order'               => strtoupper( $order ),
 		'orderby'             => 'date',
 		'offset'              => $offset,
@@ -80,6 +83,11 @@ function lps_render_latest_posts_showcase( $attributes, $content ) {
 
 	if ( ! empty( $categories ) ) {
 		$args['category__in'] = $categories;
+	}
+
+	if ( ! empty( $exclude_categories ) ) {
+		// Clean and sanitize array items.
+		$args['category__not_in'] = array_map( 'intval', $exclude_categories );
 	}
 
 	$query = new WP_Query( $args );
