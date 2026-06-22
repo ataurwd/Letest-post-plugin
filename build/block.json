@@ -3,7 +3,7 @@
   "apiVersion": 3,
   "name": "atpx/wp-atpost",
   "version": "1.0.0",
-  "title": "WP atPost",
+  "title": "AT Latest Post",
   "category": "widgets",
   "icon": "grid-view",
   "description": "Showcase your latest blog posts with beautiful customizable layouts and grid patterns.",
